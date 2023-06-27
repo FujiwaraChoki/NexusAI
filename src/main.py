@@ -1,75 +1,116 @@
-import sys
-import os
-from termcolor import colored
-from typing import List, Dict
+'''
+NexusAI: AI Chatbot using NLTK (Natural Language Processing)
+'''
+from nltk.chat.util import Chat, reflections
+import nltk
+
+nltk.download("punkt")
+nltk.download("averaged_perceptron_tagger")
+nltk.download("wordnet")
 
 
-def get_sentences(file_name: str) -> str:
-    # Method to get the sentences of the given file, seperated by a newline character (\n)
-    with open(file_name, 'r') as sentences_lines:
-        return sentences_lines.readlines()
+pairs = [
+    [
+        r"my name is (.*)",
+        ["Hello %1, How are you today?"]
+    ],
+    [
+        r"hi|hey|hello",
+        ["Hello", "Hey there"]
+    ],
+    [
+        r"what.*your name",
+        ["My name is NexusAI and I'm a chatbot"]
+    ],
+    [
+        r"how *are* you.*",
+        ["I'm doing good. How about you?", "I'm great!"]
+    ],
+    [
+        r"what* can* you* do.*",
+        ["I can assist you with information, answer questions, and have general conversations."]
+    ],
+    [
+        r"tell *me* a *joke.*",
+        ["Sure, here's one: Why don't scientists trust atoms?\nBecause they make up everything!"]
+    ],
+    [
+        r"how* old* are* you.*",
+        ["I am an AI chatbot, so I don't have an age."]
+    ],
+    [
+        r"where* are *you* from*",
+        ["I am an AI Chatbot called NexusAI, developed by Sami Hindi."]
+    ],
+    [
+        r"what is the weather like today*",
+        ["I'm sorry, I don't have the capability to provide real-time weather information. You can check a weather website or app for accurate weather updates."]
+    ],
+    [
+        r"tell me something interesting*",
+        ["Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible!"]
+    ],
+    [
+        r"do you have any hobbies*",
+        ["Well, I enjoy learning and helping people with their questions. I'm always here to chat with you!"]
+    ],
+    [
+        r"what's your favorite movie.*",
+        ["Since I'm an AI, I don't have personal preferences. However, I can recommend popular movies in various genres if you'd like."]
+    ],
+    [
+        r"how *ca*n I* learn* programming.*",
+        ["Learning programming can be exciting! You can start with online tutorials, coding websites, or even enroll in programming courses. Practice regularly and work on small projects to build your skills."]
+    ],
+    [
+        r"thank *you.*",
+        ["You're welcome! If you have any more questions, feel free to ask."]
+    ],
+    [
+        r"bye*|goodbye*",
+        ["Goodbye! Have a nice day."]
+    ],
+    [
+        r"quit*",
+        ["Goodbye! If you have any more questions, feel free to ask."]
+    ],
+]
+
+reflections = {
+    "i am": "you are",
+    "i was": "you were",
+    "i'm": "you're",
+    "i": "you",
+    "my": "your",
+    "you are": "I am",
+    "you were": "I was",
+    "you're": "I'm",
+    "you": "me",
+    "your": "my",
+    "yours": "mine",
+    "me": "you",
+    "mine": "yours",
+    "myself": "yourself",
+    "yourself": "myself",
+    "myself": "yourself",
+    "yourselves": "ourselves",
+    "ourselves": "yourselves",
+    "am": "are",
+    "was": "were",
+    "are": "am",
+    "were": "was"
+}
 
 
-def is_file_valid(file_name: str) -> bool:
-    # Method to check if a file is valid and it's contents are readable
-    if os.access(file_name, os.R_OK):
-        # Return true if the file IS readable
-        return True
-    # Return false if the file IS NOT readable
-    print(colored(f'File {file_name} is not valid. Abandoning.', 'red'))
-    return False
+chatbot = Chat(pairs, reflections)
 
-
-def main(file_name: str) -> None:
-    # Main method, takes file name as the parameter.
-    file_valid = is_file_valid(file_name)
-    if file_valid:
-        sentences = get_sentences(file_name)
-        # Loop through the sentences and mark every occurrence of a word
-        word_occurrence: Dict[str, int] = {}
-        for i, sentence in enumerate(sentences):
-            # Split the sentence by spaces into a list called `words_in_sentence`
-            words_in_sentence: List[str] = sentence.split(' ')
-            for word in words_in_sentence:
-                # Check if the word is already in the dictionary, if it is, increment the value by 1
-                if word in word_occurrence:
-                    word_occurrence[word] += 1
-                else:
-                    word_occurrence[word] = 1
-            # Ask the user if they like the sentence
-            to_ask: str = colored(sentence.replace('\n', ''), 'cyan')
-            like = input(f'Do you like the sentence "{to_ask}"? (y/n) ')
-            if like == 'y':
-                # Increment the value of the "liked" key in the dictionary by 1
-                if 'liked' in word_occurrence:
-                    word_occurrence['liked'] += 1
-                else:
-                    word_occurrence['liked'] = 1
-            else:
-                # Increment the value of the "disliked" key in the dictionary by 1
-                if 'disliked' in word_occurrence:
-                    word_occurrence['disliked'] += 1
-                else:
-                    word_occurrence['disliked'] = 1
-
-            # Check if there is a next sentence
-            if i + 1 < len(sentences):
-                # Split the next sentence by spaces into a list called `next_words_in_sentence`
-                next_words_in_sentence: List[str] = sentences[i + 1].split(' ')
-                # Compare the words in the current and next sentences
-                common_words = set(words_in_sentence) & set(next_words_in_sentence)
-                if common_words:
-                    print(colored('I predict you will like the next sentence.', 'green'))
-                else:
-                    print(colored('I predict you will not like the next sentence.', 'yellow'))
-    else:
-        exit(0)
-
-
-if __name__ == '__main__':
-    # Get file name from command line arguments
-    file_name: str = sys.argv[1]
-    try:
-        main(file_name=file_name)
-    except Exception as err:
-        print(colored(f'An Exception has occurred: {err}', 'red'))
+print("Hello, I'm NexusAI. How can I assist you today?")
+while True:
+    user_input = input("> ")
+    if user_input.lower() == "quit":
+        print("Goodbye! If you have any more questions, feel free to re-start.")
+        break
+    response = chatbot.respond(user_input)
+    if response is None:
+        print("I'm sorry, I don't understand that question yet. Please try again at a later time.")
+    print(response)
