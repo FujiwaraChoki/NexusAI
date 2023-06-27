@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8.5-blue.svg)](https://www.python.org/)
 [![NLTK](https://img.shields.io/badge/NLTK-3.5-blue.svg)](https://www.nltk.org/)
 
-<img src="assets/hero-banner.png" alt="NexusAI Banner" width="50%"/>
+<img src="assets/hero-banner.png" alt="NexusAI Banner" width="80%"/>
 
 NexusAI is an AI Chatbot with basic conversational skills and [NLP (Natural Language Processing)](https://en.wikipedia.org/wiki/Natural_language_processing) capabilities. It is built using [Python](https://www.python.org/).
 
